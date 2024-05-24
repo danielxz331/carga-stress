@@ -28,7 +28,6 @@ public class UserController {
             ObjectMapper mapper = new ObjectMapper();
             ClassPathResource resource = new ClassPathResource("users.json");
             List<Map<String, Object>> users = mapper.readValue(resource.getInputStream(), new TypeReference<>() {});
-            System.out.println("holaaaaa");
             return ResponseEntity.ok(users);
         } catch (IOException e) {
             return ResponseEntity.status(500).body(null);

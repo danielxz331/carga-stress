@@ -1,0 +1,17 @@
+version: '3.9'
+
+services:
+  pruebas_app:
+    container_name: pruebas_app
+    image: pruebas-java-app:1.0.0
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    networks:
+      - pruebas_network
+
+networks:
+  pruebas_network:
+    driver: bridge
