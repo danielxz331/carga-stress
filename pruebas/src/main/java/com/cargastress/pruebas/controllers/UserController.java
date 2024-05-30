@@ -2,19 +2,20 @@ package com.cargastress.pruebas.controllers;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
+import java.nio.file.Paths;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import java.util.List;
 import java.util.Map;
 
@@ -22,12 +23,17 @@ import java.util.Map;
 @RequestMapping("/api")
 public class UserController {
 
+    private static final Logger logger = LoggerFactory.getLogger(UserController.class);
+    private final ObjectMapper objectMapper;
+
+    public UserController(ObjectMapper objectMapper) {
+        this.objectMapper = objectMapper;
+    }
+
     @GetMapping("/list-users")
     public ResponseEntity<List<Map<String, Object>>> listUsers() {
         try {
-            ObjectMapper mapper = new ObjectMapper();
-            ClassPathResource resource = new ClassPathResource("users.json");
-            List<Map<String, Object>> users = mapper.readValue(resource.getInputStream(), new TypeReference<>() {});
+            List<Map<String, Object>> users = readUsersFromFile();
             return ResponseEntity.ok(users);
         } catch (IOException e) {
             return ResponseEntity.status(500).body(null);
@@ -73,5 +79,30 @@ public class UserController {
         } catch (IOException e) {
             return ResponseEntity.status(500).body("Error al crear el archivo XLSX: " + e.getMessage());
         }
+    }
+
+    @PostMapping("/addUser")
+    public ResponseEntity<Map<String, String>> addUser(@RequestBody Map<String, Object> newUser) {
+        try {
+            List<Map<String, Object>> users = readUsersFromFile();
+            users.add(newUser);
+            writeUsersToFile(users);
+            logger.info("Usuario añadido correctamente.");
+            return ResponseEntity.ok(Map.of("message", "Usuario añadido correctamente."));
+        } catch (IOException e) {
+            logger.error("Error al añadir el usuario: " + e.getMessage());
+            return ResponseEntity.status(500).body(Map.of("error", "Error al añadir el usuario: " + e.getMessage()));
+        }
+    }
+
+    private List<Map<String, Object>> readUsersFromFile() throws IOException {
+        String path = Paths.get("src/main/resources/users.json").toAbsolutePath().toString();
+        File file = new File(path);
+        return objectMapper.readValue(file, new TypeReference<List<Map<String, Object>>>() {});
+    }
+
+    private void writeUsersToFile(List<Map<String, Object>> users) throws IOException {
+        String path = Paths.get("src/main/resources/users.json").toAbsolutePath().toString();
+        objectMapper.writeValue(new File(path), users);
     }
 }
