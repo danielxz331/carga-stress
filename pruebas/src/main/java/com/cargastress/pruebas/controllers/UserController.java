@@ -61,24 +61,30 @@ public class UserController {
             int rowNum = 1;
             for (Map<String, Object> user : users) {
                 Row row = sheet.createRow(rowNum++);
-                row.createCell(0).setCellValue(user.get("id").toString());
-                row.createCell(1).setCellValue(user.get("name").toString());
-                row.createCell(2).setCellValue(user.get("email").toString());
-                row.createCell(3).setCellValue(user.get("age").toString());
-                row.createCell(4).setCellValue(user.get("address").toString());
-                row.createCell(5).setCellValue(user.get("phone").toString());
+                row.createCell(0).setCellValue(getStringValue(user, "id"));
+                row.createCell(1).setCellValue(getStringValue(user, "name"));
+                row.createCell(2).setCellValue(getStringValue(user, "email"));
+                row.createCell(3).setCellValue(getStringValue(user, "age"));
+                row.createCell(4).setCellValue(getStringValue(user, "address"));
+                row.createCell(5).setCellValue(getStringValue(user, "phone"));
             }
 
             String filePath = "usuarios.xlsx";
-            FileOutputStream fileOut = new FileOutputStream(new File(filePath));
-            workbook.write(fileOut);
-            fileOut.close();
+            try (FileOutputStream fileOut = new FileOutputStream(new File(filePath))) {
+                workbook.write(fileOut);
+            }
             workbook.close();
 
             return ResponseEntity.ok("Archivo guardado en: " + filePath);
         } catch (IOException e) {
+            e.printStackTrace(); // Agrega un registro para la excepción
             return ResponseEntity.status(500).body("Error al crear el archivo XLSX: " + e.getMessage());
         }
+    }
+
+    private String getStringValue(Map<String, Object> user, String key) {
+        Object value = user.get(key);
+        return value != null ? value.toString() : "";
     }
 
     @PostMapping("/addUser")

@@ -23,7 +23,7 @@ public class AddUserSimulation extends Simulation {
 
     {
         setUp(
-                scn.injectOpen(constantUsersPerSec(2).during(60))
+                scn.injectOpen(constantUsersPerSec(120).during(60))
         ).protocols(httpProtocol);
     }
 }

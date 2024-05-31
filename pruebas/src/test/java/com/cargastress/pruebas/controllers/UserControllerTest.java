@@ -47,13 +47,18 @@ public class UserControllerTest {
 
     @Test
     public void testUsersToXlsx() throws Exception {
-        mockMvc.perform(get("/api/usersToXlsx"))
-                .andExpect(status().isOk())
-                .andExpect(content().string("Archivo guardado en: usuarios.xlsx"));
+        try {
+            mockMvc.perform(get("/api/usersToXlsx"))
+                    .andExpect(status().isOk())
+                    .andExpect(content().string("Archivo guardado en: usuarios.xlsx"));
 
-        // Verificar que el archivo XLSX fue creado correctamente
-        File file = new File("usuarios.xlsx");
-        assertThat(file).exists();
+            // Verificar que el archivo XLSX fue creado correctamente
+            File file = new File("usuarios.xlsx");
+            assertThat(file).exists();
+        } catch (Exception e) {
+            e.printStackTrace(); // Imprime la traza de la excepción para más detalles
+            throw e;
+        }
     }
 
     @Test
