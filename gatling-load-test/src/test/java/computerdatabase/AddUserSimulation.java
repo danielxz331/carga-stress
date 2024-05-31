@@ -9,7 +9,7 @@ import io.gatling.javaapi.http.*;
 public class AddUserSimulation extends Simulation {
 
     HttpProtocolBuilder httpProtocol = http
-            .baseUrl("http://localhost:8080/api")
+            .baseUrl("http://192.168.1.96:8080/api")
             .acceptHeader("application/json")
             .contentTypeHeader("application/json");
 

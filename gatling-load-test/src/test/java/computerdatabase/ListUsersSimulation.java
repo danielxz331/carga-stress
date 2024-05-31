@@ -9,7 +9,7 @@ import io.gatling.javaapi.http.*;
 public class ListUsersSimulation extends Simulation {
 
   HttpProtocolBuilder httpProtocol = http
-    .baseUrl("http://localhost:8080/api") // Reemplaza con tu URL base
+    .baseUrl("http://192.168.1.96:8080/api") // Reemplaza con tu URL base
     .acceptHeader("application/json");
 
   ScenarioBuilder scn = scenario("List Users Scenario")
