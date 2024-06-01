@@ -1,1 +1,5 @@
+<<<<<<< HEAD
 addusersimulation-20240530043645159
+=======
+addusersimulation-20240530201306876
+>>>>>>> feaf479 (eliminacion resultados)

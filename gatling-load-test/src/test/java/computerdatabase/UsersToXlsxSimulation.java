@@ -9,7 +9,7 @@ import io.gatling.javaapi.http.*;
 public class UsersToXlsxSimulation extends Simulation {
 
   HttpProtocolBuilder httpProtocol = http
-    .baseUrl("http://localhost:8080/api")
+    .baseUrl("http://192.168.1.96:8080/api")
     .acceptHeader("application/json");
 
   ScenarioBuilder scn = scenario("Users to XLSX Scenario")
